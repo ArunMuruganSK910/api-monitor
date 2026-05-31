@@ -8,6 +8,7 @@ const HISTORY_BARS = [90,120,100,85,200,95,110,88,130,95,90,105,92,88,95,100,90,
 
 export default function App() {
   const [monitors, setMonitors]       = useState([]);
+const [loading, setLoading]         = useState(true);
   const [showAdd, setShowAdd]         = useState(false);
   const [showHistory, setShowHistory] = useState(null);
   const [history, setHistory]         = useState([]);
@@ -18,7 +19,8 @@ export default function App() {
   const fetchMonitors = () =>
     fetch(`${API}/monitors`)
       .then(r => r.json())
-      .then(d => setMonitors(d.monitors || []));
+      .then(d => { setMonitors(d.monitors || []); setLoading(false); })
+      .catch(() => setLoading(false));
 
   useEffect(() => {
     fetchMonitors();
@@ -75,6 +77,13 @@ export default function App() {
     : "NO MONITORS YET  ✦  ADD YOUR FIRST ENDPOINT";
 
   const tickerFull = tickerText + "  ✦  " + tickerText + "  ✦  ";
+
+  if (loading) return (
+    <div style={{ background: "#f0ebe1", height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Bebas Neue', sans-serif" }}>
+      <div style={{ fontSize: "48px", letterSpacing: "0.1em", marginBottom: "16px" }}>API MONITOR</div>
+      <div style={{ fontSize: "16px", letterSpacing: "0.2em", opacity: 0.5 }}>WAKING UP SERVER...</div>
+    </div>
+  );
 
   return (
     <div className="app">
